@@ -11,9 +11,9 @@ const recetteSchema = mongoose.Schema({
 
     nom : String, 
     description : String,
-    temps : Date,
+    temps : String,
     difficulte : String,
-    instruction : String,
+    instruction : [String],
     image : String,
     ingredients : ingredientsSchema,
 })
