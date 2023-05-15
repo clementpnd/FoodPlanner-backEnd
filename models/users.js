@@ -15,7 +15,7 @@ const userSchema = mongoose.Schema({
   photoProfil: String,
   preference: [String],
   nbPersonne : Number,
-  Semaine : semaineSchema,
+  semaines : [semaineSchema],
   recetteFavoris : [{
     type : mongoose.Schema.Types.ObjectId, ref : 'recettes'
   }],
