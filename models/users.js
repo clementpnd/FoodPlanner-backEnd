@@ -7,6 +7,7 @@ const semaineSchema = mongoose.Schema({
 })
 
 const userSchema = mongoose.Schema({
+  token : String,
   prenom: String,
   mail: String,
   password: String,
