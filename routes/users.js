@@ -44,6 +44,23 @@ router.post("/signup", (req, res) => {
   });
 });
 
+//Vérifie si un User est déja présent 
+router.post("/verify", (req, res)=>{
+  if (!checkBody(req.body, ["mail"])) {
+    res.json({ result: false, error: "Missing or empty fields" });
+    return;
+  }
+  User.findOne({ mail: req.body.mail }).then((data) => {
+    if (data !== null) {
+      res.json({ result: false, error: "User already exists" })
+    }
+    else{
+      res.json({result: true})
+    }
+
+})
+});
+
 router.post('/signin', (req, res) => {
   if (!checkBody(req.body, ['mail', 'password'])) {
     res.json({ result: false, error: 'Missing or empty fields' });
@@ -122,7 +139,29 @@ router.post('/signin', (req, res) => {
       });
     });
 
-   
+    // route PUT qui permet de modifier la semaine type déjà enrgistrée
+    router.put('/semaines', (req, res) => {
+      User.findOne({ token: req.body.token }).then(user => {
+        if (user === null) {
+          res.json({ result: false, error: 'User not found' });
+          return;
+        }
+        User.findOne(req.body.semaines).then(semaines => {
+          if (!semaines) {
+            res.json({ result: false, error: "Semaine n'existe pas" });
+            return;
+          }
+
+          else {
+            User.updateOne({ semaines: { jour, nbPersonneSemaine } })
+              .then(() => {
+                res.json({ result: true });
+              });
+          }
+        });
+      });
+    });
+
     module.exports = router;
     
 
