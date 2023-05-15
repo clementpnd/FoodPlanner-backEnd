@@ -1,22 +1,22 @@
 const mongoose = require("mongoose");
 
 const semaineSchema = mongoose.Schema({
-    jour : String,
-    nbPersonneSemaine : Number,
+    jour: String,
+    nbPersonneSemaine: Number,
 
 })
 
 const userSchema = mongoose.Schema({
-  token : String,
+  token: String,
   prenom: String,
-  pseudo : String,
+  pseudo: String,
   mail: String,
   password: String,
   photoProfil: String,
+  nbPersonne: Number,
   preference: [String],
-  nbPersonne : Number,
-  semaines : [semaineSchema],
-  recetteFavoris : [{
+  semaines: [semaineSchema],
+  recetteFavoris: [{
     type : mongoose.Schema.Types.ObjectId, ref : 'recettes'
   }],
 });
