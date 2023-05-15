@@ -43,6 +43,23 @@ router.post("/signup", (req, res) => {
   });
 });
 
+//Vérifie si un User est déja présent 
+router.post("/verify", (req, res)=>{
+  if (!checkBody(req.body, ["mail"])) {
+    res.json({ result: false, error: "Missing or empty fields" });
+    return;
+  }
+  User.findOne({ mail: req.body.mail }).then((data) => {
+    if (data !== null) {
+      res.json({ result: false, error: "User already exists" })
+    }
+    else{
+      res.json({result: true})
+    }
+
+})
+});
+
 router.post('/signin', (req, res) => {
   if (!checkBody(req.body, ['mail', 'password'])) {
     res.json({ result: false, error: 'Missing or empty fields' });
@@ -152,7 +169,6 @@ router.post('/signin', (req, res) => {
               .then(() => {
                 res.json({ result: true });
               });
-
           }
         });
       });
