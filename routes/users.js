@@ -25,6 +25,7 @@ router.post("/signup", (req, res) => {
       const newUser = new User({
         token: uid2(32),
         prenom: req.body.prenom,
+        pseudo : req.body.pseudo,
         mail: req.body.mail,
         password: hash,
         photoProfil: req.body.photoProfil,
@@ -42,8 +43,25 @@ router.post("/signup", (req, res) => {
   });
 });
 
+router.post('/signin', (req, res) => {
+  if (!checkBody(req.body, ['mail', 'password'])) {
+    res.json({ result: false, error: 'Missing or empty fields' });
+    return;
+  }
+  User.findOne({ mail: req.body.mail }).then(data => {
+    if (data && bcrypt.compareSync(req.body.password, data.password)) {
+      res.json({ result: true, token: data.token });
+    } else {
+      res.json({ result: false, error: 'User not found or wrong password' });
+    }
+  });
+});
 
 
+router.delete('/deleteAll', (req, res) =>{
+  User.deleteMany()
+  .then(() => console.log("Database clear"));
+})
 
 
 module.exports = router;

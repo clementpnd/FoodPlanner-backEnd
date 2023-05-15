@@ -9,6 +9,7 @@ const semaineSchema = mongoose.Schema({
 const userSchema = mongoose.Schema({
   token : String,
   prenom: String,
+  pseudo : String,
   mail: String,
   password: String,
   photoProfil: String,
