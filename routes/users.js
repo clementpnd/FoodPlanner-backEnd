@@ -5,7 +5,7 @@ const uid2 = require('uid2');
 const bcrypt = require('bcrypt');
 
 const User = require("../models/users");
-
+const Semaine = require("../models/users");
 /* GET users listing. */
 router.get("/", function (req, res, next) {
   res.send("respond with a resource");
@@ -73,22 +73,59 @@ router.post('/signin', (req, res) => {
       res.json({ result: false, error: 'User not found or wrong password' });
     }
   })
-})
+});
 
 
-    // route GET qui récupère le nombre de personnes enregistré dans le profil pour réutiliser dans la semaine
-    router.get('/nbPersonne/:token', (req, res) => {
-      User.findOne({ token: req.params.token }).then(user => {
-        if (user === null) {
-          res.json({ result: false, error: 'User not found' });
-          return;
+
+// route GET qui récupère le nombre de personnes enregistré dans le profil pour réutiliser dans la semaine
+router.get('/nbPersonne/:token', (req, res) => {
+  User.findOne({ token: req.params.token }).then(user => {
+    if (user === null) {
+        res.json({ result: false, error: 'User not found' });
+        return;
         }
-        else { res.json({ result: true, nbPersonne: user.nbPersonne });}
+    else { res.json({ result: true, nbPersonne: user.nbPersonne });}
       });
     });
 
 
- // route PUT qui permet de modifier la semaine type déjà enrgistrée
+ 
+//route PUT qui permet de créer la semaine type
+  router.put('/newsemaine/:token', (req, res) => {
+    User.findOne({ token: req.params.token })
+    .populate('semaines', ['jour', 'nbPersonneSemaine'])
+    .then(user => {
+     if (user === null) {
+         res.json({ result: false, error: 'User not found' });
+         return;
+       }
+      else {
+         User.updateOne(
+     {token: req.body.token},
+     {$addToSet: {semaines: {jour: req.body.jour, nbPersonneSemaine: req.body.nbPersonneSemaine}}})
+       
+         .then((data) => {
+           console.log(data)
+           res.json({ result: true, semaines: data });
+
+         });}
+   
+   });
+    });
+
+// route GET qui récupère les semaines enregistrées dans le profil pour réutiliser dans la semaine
+router.get('/semaines/:token', (req, res) => {
+  User.findOne({ token: req.params.token }).then(user => {
+    if (user === null) {
+      res.json({ result: false, error: 'User not found' });
+      return;
+    }
+    else { res.json({ result: true, semaines: user.semaines });}
+  });
+});
+
+
+// route PUT qui permet de modifier la semaine type déjà enrgistrée
  router.put('/semaines/:token', (req, res) => {
   User.findOne({ token: req.params.token }).then(user => {
     if (user === null) {
@@ -108,7 +145,7 @@ router.post('/signin', (req, res) => {
  });
 
 
-    // route GET qui permet de récupérer la semaine en cours
+// route GET qui permet de récupérer la semaine en cours
     router.get('/lastsemaine/:token', (req, res) => {
       User.findOne({ token: req.params.token }).then(user => {
         if (user === null) {
@@ -123,44 +160,28 @@ router.post('/signin', (req, res) => {
       });
     });
 
-
-    // route Get qui permet de récuperer toutes les semaines enregistrées en favoris
-    router.get('/semaines/:token', (req, res) => {
-      User.findOne({ token: req.params.token }).then(user => {
-        if (user === null) {
-          res.json({ result: false, error: 'User not found' });
-          return;
-        }
-
-        User.find({ semaines: req.body.semaines })
-          .then(semaines => {
-            res.json({ result: true, semaines });
-          });
-      });
-    });
-
+//.populate('semaines')
     // route PUT qui permet de modifier la semaine type déjà enrgistrée
-    router.put('/semaines', (req, res) => {
-      User.findOne({ token: req.body.token }).then(user => {
-        if (user === null) {
-          res.json({ result: false, error: 'User not found' });
-          return;
-        }
-        User.findOne(req.body.semaines).then(semaines => {
-          if (!semaines) {
-            res.json({ result: false, error: "Semaine n'existe pas" });
-            return;
-          }
-
+    router.post('/semaines/:token', (req, res) => {
+      User.findOne({ token: req.body.token}).then(data => {
+        if (data && (req.body.semaines != null)) {
+          res.json({ result: false, error: 'user not found' });}
           else {
-            User.updateOne({ semaines: { jour, nbPersonneSemaine } })
-              .then(() => {
-                res.json({ result: true });
+            const newSemaine = new Semaine ({
+              jour: req.body.jour,
+              nbPersonneSemaine: req.body.nbPersonneSemaine,
+            });
+            newSemaine.save()
+              .then((newSemaine) => {
+                res.json({ result: true, semaine: newSemaine });
               });
           }
         });
       });
-    });
+  
+
+    
+
 
     module.exports = router;
     
