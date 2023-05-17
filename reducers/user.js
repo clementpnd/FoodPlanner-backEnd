@@ -10,6 +10,7 @@ const initialState = {
     photoProfil: "",
     preference: [],
     recetteFavoris: [],
+    places: [],
   },
 };
 
@@ -19,6 +20,14 @@ export const userSlice = createSlice({
   reducers: {
     addUsers: (state, action) => {
       console.log(action.payload);
+    },
+    addPlace: (state, action) => {
+      state.value.places.push(action.payload);
+    },
+    removePlace: (state, action) => {
+      state.value.places = state.value.places.filter(
+        (e) => e.name !== action.payload
+      );
     },
     // email: (state, action) => {
     //   state.value.token.email.push(action.payload);
@@ -44,5 +53,5 @@ export const userSlice = createSlice({
     // },
   },
 });
-
+export const { addPlace, removePlace } = userSlice.actions;
 export default userSlice.reducer;
