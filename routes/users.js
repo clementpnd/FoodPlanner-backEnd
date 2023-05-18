@@ -31,7 +31,7 @@ router.post("/signup", (req, res) => {
         nbPersonne: req.body.nbPersonne,
         photoProfil: req.body.photoProfil,
         preference: req.body.preference,
-        semaine: [],
+        semaine: []
       });
 
       newUser.save().then((newDoc) => {
@@ -72,9 +72,13 @@ router.post("/signin", (req, res) => {
     }
   });
 });
+;
+
+
 // route GET qui récupère le nombre de personnes enregistré dans le profil pour réutiliser dans la semaine
 router.get("/nbPersonne/:token", (req, res) => {
   User.findOne({ token: req.params.token }).then((user) => {
+    console.log(user)
     if (user === null) {
       res.json({ result: false, error: "User not found" });
       return;
@@ -83,83 +87,51 @@ router.get("/nbPersonne/:token", (req, res) => {
     }
   });
 });
+
 
 //route PUT qui permet de créer la semaine type
-router.put("/newsemaine/:token", (req, res) => {
+router.put('/newsemaine/:token', (req, res) => {
   User.findOne({ token: req.params.token })
-    .populate("semaines", ["jour", "nbPersonneSemaine"])
-    .then((user) => {
-      if (user === null) {
-        res.json({ result: false, error: "User not found" });
-        return;
-      } else {
-        User.updateOne(
-          { token: req.body.token },
-          {
-            $addToSet: {
-              semaines: {
-                jour: req.body.jour,
-                nbPersonneSemaine: req.body.nbPersonneSemaine,
-              },
-            },
-          }
-        )
-        .then((data) => {
-          console.log(data);
-          res.json({ result: true, semaines: data });
-        });
-      }
-    });
-});
+  //.populate('semaines')
+  .then(user => {
+   if (user === null) {
+       res.json({ result: false, error: 'User not found' });
+       return;
+     }
+    else {
+       User.updateOne(
+   {token: req.params.token},
+   {$push: {semaines: 
+       [{
+      jour: req.body.jour,
+      midi: req.body.midi,
+      soir: req.body.soir,
+      repas: req.body.repas,
+      nbPersonneSemaine: req.body.nbPersonneSemaine,
+    }],}})
+       .then((user) => {
+         console.log("après set", user.semaines)
+         res.json({ result: true, semaines: user });
 
+   });}
+   
+ });
+  });
+
+
+
+   
+   
 // route GET qui récupère les semaines enregistrées dans le profil pour réutiliser dans la semaine
-router.get("/semaines/:token", (req, res) => {
-  User.findOne({ token: req.params.token }).then((user) => {
+router.get('/semaines/:token', (req, res) => {
+  User.findOne({ token: req.params.token }).then(user => {
     if (user === null) {
       res.json({ result: false, error: "User not found" });
       return;
     } else {
       res.json({ result: true, nbPersonne: user.nbPersonne });
     }
-  });
-});
-
-// route PUT qui permet de modifier la semaine type déjà enrgistrée
-router.put("/semaines/:token", (req, res) => {
-  User.findOne({ token: req.params.token }).then((user) => {
-    if (user === null) {
-      res.json({ result: false, error: "User not found" });
-      return;
-    } else {
-      User.updateOne(
-        { token: req.body.token },
-        {
-          $set: {
-            semaines: {
-              jour: req.body.jour,
-              nbPersonneSemaine: req.body.nbPersonneSemaine,
-            },
-          },
-        }
-      ).then((data) => {
-        console.log(data);
-        res.json({ result: true, semaines: data });
-      });
-    }
-  });
-});
-
-// route GET qui permet de récupérer la semaine en cours
-router.get("/lastsemaine/:token", (req, res) => {
-  User.findOne({ token: req.params.token }).then((user) => {
-    if (user === null) {
-      res.json({ result: false, error: "User not found" });
-      return;
-    }
-
-    User.find({ semaines: req.body.semaines }).then((semaines) => {
-      res.json({ result: true, semaines: semaines.lastIndexOf() });
-    });
+    else { res.json({ result: true, semaines: user.semaines });}
   });
 });
 
@@ -174,19 +146,23 @@ router.get("/semaines/:token", (req, res) => {
 });
 
 // route PUT qui permet de modifier la semaine type déjà enrgistrée
-router.put("/semaines/:token", (req, res) => {
-  User.findOne({ token: req.params.token }).then((user) => {
+ router.put('/semaines/:token', (req, res) => {
+  User.findOne({ token: req.params.token }).then(user => {
     if (user === null) {
       res.json({ result: false, error: "User not found" });
       return;
     } else {
+      //let semaines = [{jour: "", midi: "", soir: "", repas: "", nbPersonneSemaine: ""}]
       User.updateOne(
         { token: req.body.token },
         {
           $set: {
             semaines: {
-              jour: req.body.jour,
-              nbPersonneSemaine: req.body.nbPersonneSemaine,
+              jour: jour,
+              midi: midi,
+              soir: soir,
+              repas: repas,
+              nbPersonneSemaine: nbPersonneSemaine,
             },
           },
         }
