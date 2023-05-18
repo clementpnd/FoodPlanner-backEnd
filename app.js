@@ -4,19 +4,11 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 require("dotenv").config();
 
-<<<<<<< HEAD
 require("./models/connection");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var recettesRouter = require("./routes/recettes");
 
-const cors = require("cors");
-=======
-require('./models/connection');
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-//var recettesRouter = require('./routes/recettes');
->>>>>>> caroleback
 var app = express();
 const cors = require('cors');
 
