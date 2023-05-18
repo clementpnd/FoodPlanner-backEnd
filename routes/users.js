@@ -6,6 +6,8 @@ const bcrypt = require("bcrypt");
 
 const User = require("../models/users");
 const Semaine = require("../models/users");
+const Recette = require("../models/recettes");
+
 /* GET users listing. */
 router.get("/", function (req, res, next) {
   res.send("respond with a resource");
@@ -72,8 +74,12 @@ router.post("/signin", (req, res) => {
     }
   });
 });
-;
 
+router.get("/:token", (req, res) => {
+  User.findOne({ token: req.params.token }).then((data) => {
+    res.json({ user: data });
+  });
+});
 
 // route GET qui récupère le nombre de personnes enregistré dans le profil pour réutiliser dans la semaine
 router.get("/nbPersonne/:token", (req, res) => {
@@ -234,4 +240,18 @@ router.put("/semaines", (req, res) => {
   });
 });
 
+//route PUT qui ajoute une recette aux favoris d'un utilisateur
+router.put("/addSemaineFavorite/:token", (req, res) => {
+  User.findOne({ token: req.params.token }).then((data) => {
+    console.log(data);
+    if (data !== null) {
+      User.updateOne(
+        { token: req.params.token },
+        { $push: { recetteFavoris: [req.body.recette] } }
+      ).then(res.json({ result: true, data }));
+    } else {
+      res.json({ result: false, error: "raté" });
+    }
+  });
+});
 module.exports = router;
