@@ -75,12 +75,12 @@ router.post("/signin", (req, res) => {
   });
 });
 
-router.get("/:token", (req,res) =>{
-  User.findOne({token : req.params.token}).
-  then((data) =>{
-    res.json({user : data})
-  })
-})
+router.get("/:token", (req, res) => {
+  User.findOne({ token: req.params.token }).then((data) => {
+    res.json({ user: data });
+  });
+});
+
 // route GET qui récupère le nombre de personnes enregistré dans le profil pour réutiliser dans la semaine
 router.get("/nbPersonne/:token", (req, res) => {
   User.findOne({ token: req.params.token }).then((user) => {
