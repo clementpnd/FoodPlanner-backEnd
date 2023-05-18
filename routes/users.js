@@ -100,11 +100,8 @@ router.get("/nbPersonne/:token", (req, res) => {
          return;
        }
       else {
-        //let semaines = [{jour: newJour, midi: newMidi, soir: newSoir, repas: newRepas, nbPersonneSemaine: newNbPersonneSemaine}];
          User.updateOne(
      {token: req.params.token},
-     //{$addToSet: {semaines: {jour: req.body.jour, nbPersonneSemaine: req.body.nbPersonneSemaine}}})
-     
      {$push: {semaines: 
          [{
         jour: req.body.jour,
