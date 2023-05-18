@@ -95,7 +95,6 @@ router.get("/nbPersonne/:token", (req, res) => {
     User.findOne({ token: req.params.token })
     //.populate('semaines')
     .then(user => {
-    console.log("apr-s find", user.semaines)
      if (user === null) {
          res.json({ result: false, error: 'User not found' });
          return;
@@ -103,18 +102,17 @@ router.get("/nbPersonne/:token", (req, res) => {
       else {
         //let semaines = [{jour: newJour, midi: newMidi, soir: newSoir, repas: newRepas, nbPersonneSemaine: newNbPersonneSemaine}];
          User.updateOne(
-          console.log("après update", user.semaines),
-     {token: req.body.token},
+     {token: req.params.token},
      //{$addToSet: {semaines: {jour: req.body.jour, nbPersonneSemaine: req.body.nbPersonneSemaine}}})
      
-     {$set: {semaines: 
-         {
-        jour: newJour,
-        midi: newMidi,
-        soir: newSoir,
-        repas: newRepas,
-        nbPersonneSemaine: newNbPersonneSemaine,
-      },}})
+     {$push: {semaines: 
+         [{
+        jour: req.body.jour,
+        midi: req.body.midi,
+        soir: req.body.soir,
+        repas: req.body.repas,
+        nbPersonneSemaine: req.body.nbPersonneSemaine,
+      }],}})
          .then((user) => {
            console.log("après set", user.semaines)
            res.json({ result: true, semaines: user });
