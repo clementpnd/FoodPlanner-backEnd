@@ -263,7 +263,7 @@ router.get("/recetteFavorites/:token", (req, res) => {
         .populate("recetteFavoris")
         .then((data) => {
           // console.log("data", data);
-          res.json([data.recetteFavoris]);
+          res.json(data.recetteFavoris);
         });
     }
   });
