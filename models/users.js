@@ -2,9 +2,7 @@ const mongoose = require("mongoose");
 
 const semaineSchema = mongoose.Schema({
     jour: String,
-    midi: Boolean,
-    soir: Boolean,
-    repas: Boolean,
+    repas: String,
     nbPersonneSemaine: Number,
 
 })
