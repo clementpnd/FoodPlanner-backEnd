@@ -21,22 +21,29 @@ router.get("/suggestion", (req, res) => {
 
 router.post("/recettePref", (req, res) => {
   let pref = [];
-  let responseRecette = [];
   User.find({ token: req.body.token }).then((data) => {
-      pref = data[0].preference;
-
+    pref = data[0].preference;
   });
 
   Recette.find().then((data) => {
-    if(pref.length > 0 ){
-    pref.map((prefe) => {
-      responseRecette.push(data.filter((recette) => recette.type === prefe));
-    });
-    res.json({pref : true, responseRecette: responseRecette });
-  }
-  else{
-    res.json({pref : false,responseRecette : data})
-  }
+    if (pref.length > 0) {
+      let responseRecette =[];
+      pref.map((prefe) => {
+        Recette.find({ type: `${prefe}` }).then((data) => {
+
+          for(let i =0; i<data.length; i++){
+            responseRecette.push(data)
+          }
+          console.log(responseRecette)
+          // data.map((recette, i) => {
+          //   console.log("round ", i, " recette ", recette.nom);
+          //   responseRecette.push(recette);
+          //   console.log('responseRecette',responseRecette)
+          // });
+        });
+        res.json({ pref: true, responseRecette: responseRecette });
+      });
+    }
   });
 });
 module.exports = router;
