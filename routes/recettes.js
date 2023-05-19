@@ -27,20 +27,11 @@ router.post("/recettePref", (req, res) => {
 
   Recette.find().then((data) => {
     if (pref.length > 0) {
-      let responseRecette =[];
-      pref.map((prefe) => {
-        Recette.find({ type: `${prefe}` }).then((data) => {
-
-          for(let i =0; i<data.length; i++){
-            responseRecette.push(data)
-          }
-          console.log(responseRecette)
-          // data.map((recette, i) => {
-          //   console.log("round ", i, " recette ", recette.nom);
-          //   responseRecette.push(recette);
-          //   console.log('responseRecette',responseRecette)
-          // });
-        });
+      Recette.find({ type: { $in: pref } }).then((data) => {
+        let responseRecette = [];
+        for (let recette in data) {
+          responseRecette.push(data[recette]);
+        }
         res.json({ pref: true, responseRecette: responseRecette });
       });
     }
