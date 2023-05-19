@@ -110,8 +110,6 @@ router.put("/newsemaine/:token", (req, res) => {
               semaines: [
                 {
                   jour: req.body.jour,
-                  midi: req.body.midi,
-                  soir: req.body.soir,
                   repas: req.body.repas,
                   nbPersonneSemaine: req.body.nbPersonneSemaine,
                 },
@@ -119,7 +117,6 @@ router.put("/newsemaine/:token", (req, res) => {
             },
           }
         ).then((user) => {
-          console.log("après set", user.semaines);
           res.json({ result: true, semaines: user });
         });
       }
