@@ -235,7 +235,7 @@ router.put("/semaines", (req, res) => {
 });
 
 //route PUT qui ajoute une recette aux favoris d'un utilisateur
-router.put("/addSemaineFavorite/:token", (req, res) => {
+router.put("/addRecetteFavorite/:token", (req, res) => {
   User.findOne({ token: req.params.token }).then((data) => {
     console.log(data);
     if (data !== null) {
