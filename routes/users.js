@@ -241,7 +241,7 @@ router.put("/addRecetteFavorite/:token", (req, res) => {
     if (data !== null) {
       User.updateOne(
         { token: req.params.token },
-        { $push: { recetteFavoris: [req.body.recette] } }
+        { $push: { recetteFavoris: [req.body.recetteFavoris] } }
       ).then(res.json({ result: true, data }));
     } else {
       res.json({ result: false, error: "raté" });
