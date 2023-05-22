@@ -110,8 +110,6 @@ router.put("/newsemaine/:token", (req, res) => {
               semaines: [
                 {
                   jour: req.body.jour,
-                  midi: req.body.midi,
-                  soir: req.body.soir,
                   repas: req.body.repas,
                   nbPersonneSemaine: req.body.nbPersonneSemaine,
                 },
@@ -119,7 +117,6 @@ router.put("/newsemaine/:token", (req, res) => {
             },
           }
         ).then((user) => {
-          console.log("après set", user.semaines);
           res.json({ result: true, semaines: user });
         });
       }
@@ -224,7 +221,7 @@ router.put("/semaines", (req, res) => {
       res.json({ result: false, error: "User not found" });
       return;
     }
-    User.findOne(req.body.semaines).then((semaines) => {
+    User.find(req.body.semaines).then((semaines) => {
       if (!semaines) {
         res.json({ result: false, error: "Semaine n'existe pas" });
         return;
@@ -238,7 +235,7 @@ router.put("/semaines", (req, res) => {
 });
 
 //route PUT qui ajoute une recette aux favoris d'un utilisateur
-router.put("/addSemaineFavorite/:token", (req, res) => {
+router.put("/addRecetteFavorite/:token", (req, res) => {
   User.findOne({ token: req.params.token }).then((data) => {
     console.log(data);
     if (data !== null) {
@@ -251,4 +248,22 @@ router.put("/addSemaineFavorite/:token", (req, res) => {
     }
   });
 });
+
+//route GET qui recupère toutes les recettes ajoutées en favoris par un utilisateur
+router.get("/recetteFavorites/:token", (req, res) => {
+  User.findOne({ token: req.params.token }).then((user) => {
+    if (user === null) {
+      res.json({ result: false, error: "User not found" });
+      return;
+    } else {
+      User.findOne({ token: req.params.token })
+        .populate("recetteFavoris")
+        .then((data) => {
+          // console.log("data", data);
+          res.json(data.recetteFavoris);
+        });
+    }
+  });
+});
+
 module.exports = router;
