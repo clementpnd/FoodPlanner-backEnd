@@ -22,19 +22,30 @@ router.get("/suggestion", (req, res) => {
 router.post("/recettePref", (req, res) => {
   let pref = [];
   User.find({ token: req.body.token }).then((data) => {
+    console.log(data)
     pref = data[0].preference;
   });
 
-  Recette.find().then((data) => {
-    if (pref.length > 0) {
-      Recette.find({ type: { $in: pref } }).then((data) => {
-        let responseRecette = [];
-        for (let recette in data) {
-          responseRecette.push(data[recette]);
-        }
-        res.json({ pref: true, responseRecette: responseRecette });
-      });
-    }
-  });
+  if (pref.length > 0) {
+    Recette.find().then((data) => {
+      if (pref.length > 0) {
+        Recette.find({ type: { $in: pref } }).then((data) => {
+          let responseRecette = [];
+          for (let recette in data) {
+            responseRecette.push(data[recette]);
+          }
+          const shuffledArray = responseRecette.sort(() => 0.5 - Math.random());
+          const response = shuffledArray.slice(0, 3);
+          res.json({ pref: true, responseRecette: response });
+        });
+      }
+    });
+  } else {
+    Recette.find().then((data) => {
+      const shuffledArray = data.sort(() => 0.5 - Math.random());
+      const response = shuffledArray.slice(0, 3);
+      res.json({ pref: false, responseRecette: response });
+    });
+  }
 });
 module.exports = router;
