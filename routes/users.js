@@ -266,4 +266,28 @@ router.get("/recetteFavorites/:token", (req, res) => {
   });
 });
 
+router.put("/addsemaineFavorite/:token", (req, res) => {
+  User.findOne({ token: req.params.token }).then((data) => {
+    console.log(req.body.semaineFavoris);
+    if (data !== null) {
+      User.updateOne(
+        { token: req.params.token },
+        {
+          $push: {
+            semaines: [
+              {
+                jour: req.body.semaineFavoris.jour,
+                value: req.body.semaineFavoris.value,
+                nbPersonne: req.body.semaineFavoris.nbPersonne,
+              },
+            ],
+          },
+        }
+      ).then(res.json({ result: true, data }));
+    } else {
+      res.json({ result: false, error: "raté" });
+    }
+  });
+});
+
 module.exports = router;
