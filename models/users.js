@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 
-const semaineSchema = mongoose.Schema({
+const semaineSchema = mongoose.Schema(
+  [{
     jour: String,
     repas: String,
-    nbPersonneSemaine: Number,
+    nbPersonne: Number,
 
-})
+}])
 
 const userSchema = mongoose.Schema({
   token: String,

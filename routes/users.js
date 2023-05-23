@@ -268,18 +268,23 @@ router.get("/recetteFavorites/:token", (req, res) => {
 
 router.put("/addsemaineFavorite/:token", (req, res) => {
   User.findOne({ token: req.params.token }).then((data) => {
-    console.log(req.body.semaineFavoris[0]);
     if (data !== null) {
       User.updateOne(
         { token: req.params.token },
-        {
-          semaines: [
-            {
-              jour: req.body.semaineFavoris[0],
-            },
-          ],
-        }
+        { semaines: req.body.semaineFavoris[0] }
       ).then(res.json({ result: true, data }));
+    } else {
+      res.json({ result: false, error: "raté" });
+    }
+  });
+});
+
+router.delete("/removeSemaineFavorite/:token", (req, res) => {
+  User.findOne({ token: req.params.token }).then((data) => {
+    if (data !== null) {
+      User.updateOne({ token: req.params.token }, { semaines: [] }).then(
+        res.json({ result: true, data })
+      );
     } else {
       res.json({ result: false, error: "raté" });
     }
