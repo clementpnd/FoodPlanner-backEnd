@@ -267,19 +267,17 @@ router.get("/recetteFavorites/:token", (req, res) => {
 });
 
 router.put("/addsemaineFavorite/:token", (req, res) => {
-  array = 
   User.findOne({ token: req.params.token }).then((data) => {
     console.log(req.body.semaineFavoris[0]);
     if (data !== null) {
       User.updateOne(
         { token: req.params.token },
         {
-          semaines : [
+          semaines: [
             {
-              jour : req.body.semaineFavoris[0]
-            }
-          ]
-          
+              jour: req.body.semaineFavoris[0],
+            },
+          ],
         }
       ).then(res.json({ result: true, data }));
     } else {
