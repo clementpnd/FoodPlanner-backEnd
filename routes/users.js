@@ -7,9 +7,6 @@ const bcrypt = require("bcrypt");
 const User = require("../models/users");
 const Semaine = require("../models/users");
 const Recette = require("../models/recettes");
-const {
-  default: recettesFavorites,
-} = require("../../FoodPlanner-frontEnd/reducers/recettesFavorites");
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
