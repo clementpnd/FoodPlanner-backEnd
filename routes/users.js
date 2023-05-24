@@ -7,6 +7,9 @@ const bcrypt = require("bcrypt");
 const User = require("../models/users");
 const Semaine = require("../models/users");
 const Recette = require("../models/recettes");
+const {
+  default: recettesFavorites,
+} = require("../../FoodPlanner-frontEnd/reducers/recettesFavorites");
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
@@ -259,7 +262,7 @@ router.get("/recetteFavorites/:token", (req, res) => {
       User.findOne({ token: req.params.token })
         .populate("recetteFavoris")
         .then((data) => {
-          // console.log("data", data);
+          console.log("data", data);
           res.json(data.recetteFavoris);
         });
     }
@@ -291,26 +294,39 @@ router.delete("/removeSemaineFavorite/:token", (req, res) => {
   });
 });
 
-
-router.put("/profilUpdate/:token", (req,res) =>{
+router.put("/profilUpdate/:token", (req, res) => {
   if (!checkBody(req.body, ["prenom", "pseudo"])) {
     res.json({ result: false, error: "Missing or empty fields" });
     return;
   }
-  console.log('req.body.photoProfil',req.body.photoProfil)
+  console.log("req.body.photoProfil", req.body.photoProfil);
   User.findOne({ token: req.params.token }).then((data) => {
     if (data !== null) {
       User.updateOne(
         { token: req.params.token },
         {
-          prenom : req.body.prenom,
-          pseudo : req.body.pseudo,
-          photoProfil : req.body.photoProfil
+          prenom: req.body.prenom,
+          pseudo: req.body.pseudo,
+          photoProfil: req.body.photoProfil,
         }
       ).then(res.json({ result: true, data }));
+    }
+  });
+});
+//route qui supprime une recette mise en favoris
+router.post("/deleteFavorisRecette/:token", (req, res) => {
+  User.findOne({ token: req.params.token }).then((data) => {
+    if (data !== null) {
+      User.updateOne(
+        {},
+        { $pull: { recettesFavorites: recetteRedux.recettesFavorites[nb]._id } }
+      )
+        .populate("recettes")
+        .then(res.json({ result: true, data }));
     } else {
       res.json({ result: false, error: "raté" });
     }
   });
-})
+});
+
 module.exports = router;
