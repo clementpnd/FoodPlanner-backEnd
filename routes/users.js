@@ -7,6 +7,9 @@ const bcrypt = require("bcrypt");
 const User = require("../models/users");
 const Semaine = require("../models/users");
 const Recette = require("../models/recettes");
+const {
+  default: recettesFavorites,
+} = require("../../FoodPlanner-frontEnd/reducers/recettesFavorites");
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
@@ -259,7 +262,7 @@ router.get("/recetteFavorites/:token", (req, res) => {
       User.findOne({ token: req.params.token })
         .populate("recetteFavoris")
         .then((data) => {
-          // console.log("data", data);
+          console.log("data", data);
           res.json(data.recetteFavoris);
         });
     }
@@ -285,6 +288,22 @@ router.delete("/removeSemaineFavorite/:token", (req, res) => {
       User.updateOne({ token: req.params.token }, { semaines: [] }).then(
         res.json({ result: true, data })
       );
+    } else {
+      res.json({ result: false, error: "raté" });
+    }
+  });
+});
+
+//route qui supprime une recette mise en favoris
+router.post("/deleteFavorisRecette/:token", (req, res) => {
+  User.findOne({ token: req.params.token }).then((data) => {
+    if (data !== null) {
+      User.updateOne(
+        {},
+        { $pull: { recettesFavorites: recetteRedux.recettesFavorites[nb]._id } }
+      )
+        .populate("recettes")
+        .then(res.json({ result: true, data }));
     } else {
       res.json({ result: false, error: "raté" });
     }
