@@ -293,4 +293,26 @@ router.delete("/removeSemaineFavorite/:token", (req, res) =>{
   });
 })
 
+
+router.put("/profilUpdate/:token", (req,res) =>{
+  if (!checkBody(req.body, ["prenom", "pseudo"])) {
+    res.json({ result: false, error: "Missing or empty fields" });
+    return;
+  }
+  console.log('req.body.photoProfil',req.body.photoProfil)
+  User.findOne({ token: req.params.token }).then((data) => {
+    if (data !== null) {
+      User.updateOne(
+        { token: req.params.token },
+        {
+          prenom : req.body.prenom,
+          pseudo : req.body.pseudo,
+          photoProfil : req.body.photoProfil
+        }
+      ).then(res.json({ result: true, data }));
+    } else {
+      res.json({ result: false, error: "raté" });
+    }
+  });
+})
 module.exports = router;
