@@ -304,7 +304,6 @@ router.put("/profilUpdate/:token", (req, res) => {
         {
           prenom: req.body.prenom,
           pseudo: req.body.pseudo,
-          photoProfil: req.body.photoProfil,
         }
       ).then(res.json({ result: true, data }));
     }
